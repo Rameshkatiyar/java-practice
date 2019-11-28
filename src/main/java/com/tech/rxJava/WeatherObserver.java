@@ -3,28 +3,25 @@ package com.tech.rxJava;
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
 
-public class WeatherClient implements Observer<WeatherInfo> {
+public class WeatherObserver implements Observer<WeatherInfo> {
 
-    private int clientId;
     private Disposable disposable;
-
-
-    public WeatherClient(int clientId){
-        this.clientId = clientId;
-    }
 
     @Override
     public void onSubscribe(Disposable d) {
-        System.out.println("Subscribed client : " + clientId);
+        System.out.println("Subscribed weather observer!");
         this.disposable = d;
     }
 
     @Override
     public void onNext(WeatherInfo weatherInfo) {
         String thread = Thread.currentThread().getName();
-        System.out.println("Client "+ clientId +" : "+ weatherInfo.getCity() +" - "+ weatherInfo.getTemperature()+"   Thread: "+thread);
-        if (weatherInfo.getTemperature() > 48.0f){
+        System.out.println(weatherInfo.getCity() +" - "+ weatherInfo.getTemperature()+"  |  Thread: "+thread);
+
+        //Unsubscribe, once we got Bangalore temp above then 49.
+        if (weatherInfo.getCity().equalsIgnoreCase("BENG") && weatherInfo.getTemperature() > 46){
             disposable.dispose();
+            System.out.println("Unsubscribed with weather observable!");
         }
     }
 

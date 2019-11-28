@@ -3,21 +3,19 @@ package com.tech.rxJava;
 import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
 
+import java.util.Arrays;
 import java.util.List;
 
 public class WeatherObservable implements ObservableOnSubscribe<WeatherInfo> {
 
-    private List<String> listOfCity;
-
-    public WeatherObservable(List<String> listOfCity){
-        this.listOfCity = listOfCity;
-    }
+    private List<String> listOfCity = Arrays.asList("BENG", "MYSR", "DELH", "MUMB", "PUNE", "HYDR");
 
     @Override
-    public void subscribe(ObservableEmitter<WeatherInfo> emitter) throws Exception {
-        while (!emitter.isDisposed()) {
+    public void subscribe(ObservableEmitter<WeatherInfo> emitter) {
+        int hoursCount = 0;
+        while (hoursCount++ < 2) {
             listOfCity.stream()
-                    .map(WeatherObservable::fetchWeatherInfo)
+                    .map(WeatherAPI::fetchWeatherInfo)
                     .forEach(
                             weatherInfo -> {
                                 emitter.onNext(weatherInfo);
@@ -25,12 +23,7 @@ public class WeatherObservable implements ObservableOnSubscribe<WeatherInfo> {
                             }
                     );
         }
-    }
-
-    private static WeatherInfo fetchWeatherInfo(String city){
-        float temperature = WeatherAPI.getTemperature(city);
-        float windSpeed = WeatherAPI.getWindSpeed(city);
-        return new WeatherInfo(city, temperature, windSpeed);
+        emitter.onComplete();
     }
 
     private static void sleep(int sec){

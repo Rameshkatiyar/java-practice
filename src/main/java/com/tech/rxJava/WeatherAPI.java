@@ -7,6 +7,12 @@ public class WeatherAPI {
 
     private static DecimalFormat df = new DecimalFormat("0.00");
 
+    public static WeatherInfo fetchWeatherInfo(String city){
+        float temperature = getTemperature(city);
+        float windSpeed = getWindSpeed(city);
+        return new WeatherInfo(city, temperature, windSpeed);
+    }
+
     public static float getTemperature(String city){
         //Here call some weather api and get the given city's temperature.
         //Here we are generating random temperature from 20 to 50 degree Cel for given city.

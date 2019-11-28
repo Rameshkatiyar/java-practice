@@ -3,24 +3,20 @@ package com.tech.rxJava;
 import io.reactivex.Observable;
 import io.reactivex.schedulers.Schedulers;
 
-import java.util.Arrays;
-import java.util.List;
-
 public class RxJavaMainClass {
 
     public static void main(String args[]) throws InterruptedException {
-        List<String> listOfCity = Arrays.asList("BENG", "MYSR", "DELH", "MUMB", "PUNE", "HYDR");
-        Observable<WeatherInfo> weatherInfo = WeatherServer.getWeatherInfo(listOfCity);
+        Observable<WeatherInfo> weatherObservable = WeatherServer.getWeatherObservable();
 
-        WeatherClient weatherClient1 = new WeatherClient(1);
-        WeatherClient weatherClient2 = new WeatherClient(2);
+        WeatherObserver weatherObserver = new WeatherObserver();
 
-        weatherInfo
+        weatherObservable
+                .filter(weatherInfo1 -> weatherInfo1.getTemperature() > 40)
                 .subscribeOn(Schedulers.computation())
-                .subscribe(weatherClient1);
+                .onErrorReturnItem(new WeatherInfo("NA", 0, 0))
+                .subscribe(weatherObserver);
 
-        weatherInfo.subscribe(weatherClient2);
-        Thread.sleep(10000);
+        Thread.sleep(50000);
 
     }
 }
