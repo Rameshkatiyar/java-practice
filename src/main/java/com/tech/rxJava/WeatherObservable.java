@@ -19,7 +19,9 @@ public class WeatherObservable implements ObservableOnSubscribe<WeatherInfo> {
                     .forEach(
                             weatherInfo -> {
                                 emitter.onNext(weatherInfo);
-                                sleep(1);
+                                String thread = Thread.currentThread().getName();
+                                System.out.println("Emitting - "+weatherInfo.getCity() +" - "+ weatherInfo.getTemperature()+"  |  Thread: "+thread);
+//                                sleep(1);
                             }
                     );
         }
